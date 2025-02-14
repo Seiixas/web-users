@@ -78,7 +78,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="p-8 h-full w-full flex items-center justify-center md:w-1/2">
+      <div className="p-8 h-full w-full flex items-center justify-center md:w-1/2 [@media(max-width:900px)]:w-full">
         <div className="w-full max-w-sm">
           <Image
             src="/logo.svg"

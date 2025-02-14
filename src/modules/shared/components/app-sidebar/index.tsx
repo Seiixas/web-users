@@ -47,10 +47,10 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <div className="flex flex-col h-full">
-        <SidebarHeader className="flex items-center justify-center pt-6">
+        <SidebarHeader className="flex items-center justify-center mt-6">
           <Image src="/logo.svg" width={140} height={60} alt="Logo" />
         </SidebarHeader>
-        <SidebarContent className="mt-4">
+        <SidebarContent className="block mt-4">
           {sidebarActions.map((group) => (
             <SidebarGroup key={group.group}>
               <SidebarGroupLabel className="font-semibold">
