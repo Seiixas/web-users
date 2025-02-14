@@ -23,6 +23,7 @@ import { useSession } from "@/hooks/use-sessions";
 import { useToast } from "@/hooks/use-toast";
 import { extractIdFromToken } from "@/lib/decode-token";
 import { Badge } from "@/modules/shared/components/badge";
+import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -86,12 +87,10 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen w-full">
-      <header className="border-b px-8 py-4">
-        <h1 className="text-xl font-bold">Usuários</h1>
-        <p className="text-muted-foreground text-sm">
-          Visualize e gerencie os usuários cadastrados no sistema.
-        </p>
-      </header>
+      <Header
+        title="Usuários"
+        subtitle="Visualize e gerencie os usuários cadastrados no sistema."
+      />
       <div className="h-[calc(100vh-4rem)] overflow-auto p-8">
         <div className="flex items-center justify-between mb-4">
           <Input

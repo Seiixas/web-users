@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "@/hooks/use-sessions";
+import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Mail, RefreshCcw } from "lucide-react";
@@ -35,12 +36,10 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto">
-      <header className="border-b mb-8 px-8 py-4">
-        <h1 className="text-xl font-bold">Seu perfil</h1>
-        <p className="text-muted-foreground text-sm">
-          Visualize e atualize suas informações de perfil.
-        </p>
-      </header>
+      <Header
+        title="Seu perfil"
+        subtitle="Visualize e atualize suas informações de perfil."
+      />
       <Card className="max-w-3xl mx-auto">
         <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
           <Avatar className="w-24 h-24">

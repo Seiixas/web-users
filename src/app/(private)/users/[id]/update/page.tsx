@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSession } from "@/hooks/use-sessions";
+import { Header } from "@/modules/shared/components/header";
 
 const updateUserSchema = z.object({
   name: z.string().optional(),
@@ -96,12 +97,10 @@ export default function UserSettingsPage() {
 
   return (
     <div className="container mx-auto">
-      <header className="border-b px-8 py-4">
-        <h1 className="text-xl font-bold">Informações de perfil</h1>
-        <p className="text-muted-foreground text-sm">
-          Atualiza informações de perfil do usuário.
-        </p>
-      </header>
+      <Header
+        title="Seu perfil"
+        subtitle="Visualize e atualize suas informações de perfil."
+      />
       <div className="p-8">
         <form
           onSubmit={handleSubmit}

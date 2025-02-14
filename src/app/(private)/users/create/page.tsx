@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSession } from "@/hooks/use-sessions";
+import { Header } from "@/modules/shared/components/header";
 
 const createUserSchema = z.object({
   name: z.string({ required_error: "Nome é obrigatório" }).min(1, {
@@ -71,12 +72,10 @@ export default function UserCreationPage() {
 
   return (
     <div className="container mx-auto">
-      <header className="border-b px-8 py-4">
-        <h1 className="text-xl font-bold">Informações de perfil</h1>
-        <p className="text-muted-foreground text-sm">
-          Atualiza informações de perfil do usuário.
-        </p>
-      </header>
+      <Header
+        title="Crie um novo usuário"
+        subtitle="Preencha os campos abaixo para criar um novo usuário."
+      />
       <div className="p-8">
         <form
           onSubmit={handleSubmit}
