@@ -1,8 +1,8 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useSession } from "@/hooks/use-sessions";
+import { AppSidebar } from "@/modules/shared/components/app-sidebar";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

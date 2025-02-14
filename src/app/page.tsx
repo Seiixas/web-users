@@ -50,6 +50,7 @@ export default function Home() {
       setSession({
         user: {
           id: data.user.id,
+          name: data.user.name,
           email: data.user.email,
         },
         role: data.user.role,

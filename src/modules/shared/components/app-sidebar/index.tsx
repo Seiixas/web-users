@@ -1,7 +1,6 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,7 +11,7 @@ import {
 import { List, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { AppSidebarFooter } from "./app-sidebar-footer";
 
 const sidebarActions = [
   {
@@ -75,20 +74,7 @@ export function AppSidebar() {
             </SidebarGroup>
           ))}
         </SidebarContent>
-        <SidebarFooter className="p-4 border-t flex flex-row">
-          <div>
-            <Avatar>
-              <AvatarImage src="https://github.com/Seiixas.png" />
-              <AvatarFallback>MS</AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="flex flex-col ml-4">
-            <strong className="text-sm">Mateus Seixas</strong>
-            <span className="text-xs overflow-ellipsis">
-              mateuseixas@icloud.com
-            </span>
-          </div>
-        </SidebarFooter>
+        <AppSidebarFooter />
       </div>
     </Sidebar>
   );
