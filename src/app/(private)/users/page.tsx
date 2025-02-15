@@ -41,7 +41,7 @@ import { Permission } from "@/lib/casl/ability";
 import { Badge } from "@/modules/shared/components/badge";
 import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { debounce } from "lodash";
 import {
@@ -74,7 +74,6 @@ export default function UsersPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { accessToken } = useSession();
-  const queryClient = new QueryClient();
   const isMobile = useIsMobile();
 
   const hasPermission = usePermissionRedirect(Permission.READ_ANY);
@@ -104,7 +103,6 @@ export default function UsersPage() {
     mutationFn: userService.delete,
     onSuccess: () => {
       toast({ title: "Usuário deletado com sucesso" });
-      queryClient.invalidateQueries({ queryKey: ["list-users"] });
       reloadUsers();
     },
     onError: (error) => {

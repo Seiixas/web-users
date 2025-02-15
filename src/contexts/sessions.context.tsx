@@ -18,6 +18,7 @@ type TSessionContext = {
     role: "ADMIN" | "MANAGER" | "STANDARD";
     accessToken: string;
   }) => void;
+
   clearSession: () => void;
 };
 
