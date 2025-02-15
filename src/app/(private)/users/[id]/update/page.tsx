@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import { useSession } from "@/hooks/use-sessions";
 import { Header } from "@/modules/shared/components/header";
+import { Can } from "@/modules/shared/components/can";
+import { Permission } from "@/lib/casl/ability";
 
 const updateUserSchema = z.object({
   name: z.string().optional(),
@@ -151,38 +153,40 @@ export default function UserSettingsPage() {
                 Sua senha deve ter no mínimo 6 caracteres e no máximo 24.
               </span>
             </div>
-            <div>
-              <Label htmlFor="role">Função</Label>
-              <Controller
-                name="role"
-                control={form.control}
-                render={({ field }) => (
-                  <Select
-                    onValueChange={field.onChange}
-                    {...field}
-                    defaultValue={user?.role}
-                  >
-                    <SelectTrigger id="role" className="w-[180px]">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem className="cursor-pointer" value="ADMIN">
-                        Administrador
-                      </SelectItem>
-                      <SelectItem className="cursor-pointer" value="MANAGER">
-                        Gerente
-                      </SelectItem>
-                      <SelectItem className="cursor-pointer" value="STANDARD">
-                        Padrão
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <span className="text-muted-foreground text-xs">
-                A função do usuário define suas permissões.
-              </span>
-            </div>
+            <Can I={Permission.EDIT_ALL} a="User">
+              <div>
+                <Label htmlFor="role">Função</Label>
+                <Controller
+                  name="role"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      {...field}
+                      defaultValue={user?.role}
+                    >
+                      <SelectTrigger id="role" className="w-[180px]">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem className="cursor-pointer" value="ADMIN">
+                          Administrador
+                        </SelectItem>
+                        <SelectItem className="cursor-pointer" value="MANAGER">
+                          Gerente
+                        </SelectItem>
+                        <SelectItem className="cursor-pointer" value="STANDARD">
+                          Padrão
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <span className="text-muted-foreground text-xs">
+                  A função do usuário define suas permissões.
+                </span>
+              </div>
+            </Can>
             <Button
               type="submit"
               variant={"ghost"}

@@ -12,6 +12,8 @@ import { List, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { AppSidebarFooter } from "./app-sidebar-footer";
+import { Permission } from "@/lib/casl/ability";
+import { Can } from "../can";
 
 const sidebarActions = [
   {
@@ -22,6 +24,7 @@ const sidebarActions = [
         title: "Meu perfil",
         icon: User,
         href: "/users/me",
+        permission: undefined,
       },
     ],
   },
@@ -33,11 +36,13 @@ const sidebarActions = [
         title: "Novo",
         icon: PlusCircle,
         href: "/users/create",
+        permission: Permission.CREATE,
       },
       {
         title: "Listagem",
         icon: List,
         href: "/users",
+        permission: Permission.READ_ANY,
       },
     ],
   },
@@ -57,19 +62,35 @@ export function AppSidebar() {
                 {group.title.toUpperCase()}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                {group.actions.map((item) => (
-                  <SidebarMenuItem key={item.href} className="p-1">
-                    <SidebarMenuButton
-                      className="py-6 px-4 rounded-xl font-bold"
-                      asChild
-                    >
-                      <Link href={item.href}>
-                        <item.icon className="text-black" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.actions.map((item) =>
+                  !item.permission ? (
+                    <SidebarMenuItem className="p-1" key={item.href}>
+                      <SidebarMenuButton
+                        className="py-6 px-4 rounded-xl font-bold"
+                        asChild
+                      >
+                        <Link href={item.href}>
+                          <item.icon className="text-black" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ) : (
+                    <Can I={item.permission} a="User" key={item.href}>
+                      <SidebarMenuItem className="p-1">
+                        <SidebarMenuButton
+                          className="py-6 px-4 rounded-xl font-bold"
+                          asChild
+                        >
+                          <Link href={item.href}>
+                            <item.icon className="text-black" />
+                            <span>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </Can>
+                  )
+                )}
               </SidebarGroupContent>
             </SidebarGroup>
           ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AbilityProvider } from "@/contexts/ability.provider";
 import { useSession } from "@/hooks/use-sessions";
 import { AppSidebar } from "@/modules/shared/components/app-sidebar";
 import { useRouter } from "next/navigation";
@@ -26,8 +27,10 @@ export default function PrivateLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      {children}
+      <AbilityProvider>
+        <AppSidebar />
+        {children}
+      </AbilityProvider>
     </SidebarProvider>
   );
 }

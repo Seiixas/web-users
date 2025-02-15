@@ -11,9 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
 import { useSession } from "@/hooks/use-sessions";
+import { Permission } from "@/lib/casl/ability";
 import { Badge } from "@/modules/shared/components/badge";
-import { Badge as BadgeCN } from "@/components/ui/badge";
 import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +26,8 @@ export default function ProfilePage() {
   const { id } = useParams();
   const { accessToken } = useSession();
 
+  const hasPermission = usePermissionRedirect(Permission.READ_ANY);
+
   const { data: user } = useQuery({
     queryKey: ["user", id],
     queryFn: () =>
@@ -33,7 +36,12 @@ export default function ProfilePage() {
         accessToken: accessToken as string,
       }),
     retry: false,
+    enabled: hasPermission,
   });
+
+  if (!hasPermission) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto">

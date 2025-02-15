@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { authService } from "@/modules/auth/services/auth";
 import { useSession } from "@/hooks/use-sessions";
+import { useEffect } from "react";
 
 const signInSchema = z.object({
   email: z.string({ required_error: "O e-mail é obrigatório" }).email({
@@ -35,11 +36,17 @@ export default function Home() {
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
-  const { setSession } = useSession();
+  const { setSession, accessToken } = useSession();
 
   const handleSubmit = form.handleSubmit(async (data) => {
     signIn(data);
   });
+
+  useEffect(() => {
+    if (accessToken) {
+      router.push("/users/me");
+    }
+  }, [accessToken, router]);
 
   const { mutate: signIn, isPending: isLoading } = useMutation({
     mutationFn: authService.signIn,
@@ -56,7 +63,7 @@ export default function Home() {
         role: data.user.role,
         accessToken: data.accessToken,
       });
-      router.push("/users");
+      router.push("/users/me");
     },
     onError: (error) => {
       toast({
@@ -66,6 +73,10 @@ export default function Home() {
       });
     },
   });
+
+  if (accessToken) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex h-screen w-screen">

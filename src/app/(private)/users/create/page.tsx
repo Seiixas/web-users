@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { useSession } from "@/hooks/use-sessions";
 import { Header } from "@/modules/shared/components/header";
+import { Permission } from "@/lib/casl/ability";
+import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
 
 const createUserSchema = z.object({
   name: z.string({ required_error: "Nome é obrigatório" }).min(1, {
@@ -44,6 +46,7 @@ export default function UserCreationPage() {
   const isMobile = useIsMobile();
   const { accessToken } = useSession();
   const { toast } = useToast();
+  const hasPermission = usePermissionRedirect(Permission.CREATE);
 
   const { mutate: createUser, isPending: isUpdating } = useMutation({
     mutationFn: userService.create,
@@ -69,6 +72,8 @@ export default function UserCreationPage() {
   const handleSubmit = form.handleSubmit(async (data) => {
     createUser({ ...data, accessToken: accessToken as string });
   });
+
+  if (!hasPermission) return null;
 
   return (
     <div className="container mx-auto">

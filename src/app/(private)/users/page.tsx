@@ -19,9 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useAbility } from "@/contexts/ability.context";
+import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
 import { useSession } from "@/hooks/use-sessions";
 import { useToast } from "@/hooks/use-toast";
-import { extractIdFromToken } from "@/lib/decode-token";
+import { Permission } from "@/lib/casl/ability";
 import { Badge } from "@/modules/shared/components/badge";
 import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
@@ -29,7 +31,7 @@ import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Eye, Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function UsersPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -39,14 +41,13 @@ export default function UsersPage() {
   const { accessToken } = useSession();
   const queryClient = new QueryClient();
 
-  useEffect(() => {
-    const t = extractIdFromToken(accessToken!);
-    console.log(t);
-  }, [accessToken]);
+  const ability = useAbility();
+  const isUserAllowed = ability.can(Permission.READ_ANY, "User");
 
   const { data: users, refetch: reloadUsers } = useQuery({
     queryKey: ["list-users"],
     queryFn: () => userService.list({ accessToken: accessToken as string }),
+    enabled: isUserAllowed,
   });
 
   const { mutate: deleteUser } = useMutation({
@@ -84,6 +85,9 @@ export default function UsersPage() {
     setIsDeleteDialogOpen(false);
     setSelectedUserId(null);
   };
+
+  const hasPermission = usePermissionRedirect(Permission.READ_ANY);
+  if (!hasPermission) return null;
 
   return (
     <div className="min-h-screen w-full">
