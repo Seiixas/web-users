@@ -10,6 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -27,6 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
 import { useSession } from "@/hooks/use-sessions";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +44,14 @@ import { userService } from "@/modules/users/services";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { debounce } from "lodash";
-import { ChevronLeft, ChevronRight, Eye, Pencil, Trash } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  EllipsisVertical,
+  Eye,
+  Pencil,
+  Trash,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -61,6 +75,7 @@ export default function UsersPage() {
   const router = useRouter();
   const { accessToken } = useSession();
   const queryClient = new QueryClient();
+  const isMobile = useIsMobile();
 
   const hasPermission = usePermissionRedirect(Permission.READ_ANY);
 
@@ -200,29 +215,62 @@ export default function UsersPage() {
                     {format(new Date(user.created_at), "dd/MM/yyyy 'às' HH:mm")}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="link"
-                      className="text-sm"
-                      onClick={() => handleViewUser(user.id)}
-                    >
-                      <Eye className="text-foreground" />
-                    </Button>
-                    <Button
-                      variant="link"
-                      className="text-sm"
-                      onClick={() => handleEditUser(user.id)}
-                    >
-                      <Pencil className="text-foreground" />
-                    </Button>
-                    <Button
-                      variant="link"
-                      className="text-sm"
-                      onClick={() => {
-                        handleOpenDeleteUserModal(user.id);
-                      }}
-                    >
-                      <Trash className="text-destructive" />
-                    </Button>
+                    {isMobile ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="p-2 rounded cursor-pointer flex items-center justify-center gap-1">
+                          <EllipsisVertical className="text-foreground" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() => handleViewUser(user.id)}
+                          >
+                            <Eye />
+                            <span className="text-sm">Visualizar</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() => handleEditUser(user.id)}
+                          >
+                            <Pencil />
+                            <span className="text-sm">Editar</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="cursor-pointer text-destructive"
+                            onClick={() => handleOpenDeleteUserModal(user.id)}
+                          >
+                            <Trash />
+                            <span className="text-sm">Deletar</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <>
+                        <Button
+                          variant="link"
+                          className="text-sm"
+                          onClick={() => handleViewUser(user.id)}
+                        >
+                          <Eye className="text-foreground" />
+                        </Button>
+                        <Button
+                          variant="link"
+                          className="text-sm"
+                          onClick={() => handleEditUser(user.id)}
+                        >
+                          <Pencil className="text-foreground" />
+                        </Button>
+                        <Button
+                          variant="link"
+                          className="text-sm"
+                          onClick={() => {
+                            handleOpenDeleteUserModal(user.id);
+                          }}
+                        >
+                          <Trash className="text-destructive" />
+                        </Button>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -276,7 +324,15 @@ export default function UsersPage() {
               permanentemente.
             </DialogDescription>
             <DialogFooter>
-              <Button variant={"ghost"}>Cancelar</Button>
+              <Button
+                variant={"ghost"}
+                onClick={() => {
+                  setIsDeleteDialogOpen(false);
+                  setSelectedUserId(null);
+                }}
+              >
+                Cancelar
+              </Button>
               <Button variant={"destructive"} onClick={handleDeleteUser}>
                 Deletar
               </Button>

@@ -1,6 +1,7 @@
+import { Env } from "@/lib/env";
 import { TAuthService } from "./types";
 
-const AUTH_ENDPOINT = `http://localhost:3000/auth`;
+const AUTH_ENDPOINT = `${Env.NEXT_PUBLIC_API_URL}/auth`;
 
 export const authService: TAuthService = {
   signIn: async (payload) => {

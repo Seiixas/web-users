@@ -1,10 +1,11 @@
+import { Env } from "@/lib/env";
 import { TUserService } from "./types";
 
-const AUTH_ENDPOINT = `http://localhost:3000/users`;
+const USERS_ENDPOINT = `${Env.NEXT_PUBLIC_API_URL}/users`;
 
 export const userService: TUserService = {
   create: async (data) => {
-    const response = await fetch(`${AUTH_ENDPOINT}`, {
+    const response = await fetch(`${USERS_ENDPOINT}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +24,7 @@ export const userService: TUserService = {
       ...(data.role && { role: data.role }),
     });
 
-    const response = await fetch(`${AUTH_ENDPOINT}?${params}`, {
+    const response = await fetch(`${USERS_ENDPOINT}?${params}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +37,7 @@ export const userService: TUserService = {
     return await response.json();
   },
   delete: async (data) => {
-    const response = await fetch(`${AUTH_ENDPOINT}/${data.id}`, {
+    const response = await fetch(`${USERS_ENDPOINT}/${data.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +48,7 @@ export const userService: TUserService = {
     if (!response.ok) throw await response.json();
   },
   profile: async (data) => {
-    const response = await fetch(`${AUTH_ENDPOINT}/${data.id}`, {
+    const response = await fetch(`${USERS_ENDPOINT}/${data.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +61,7 @@ export const userService: TUserService = {
     return await response.json();
   },
   update: async (data) => {
-    const response = await fetch(`${AUTH_ENDPOINT}/${data.id}`, {
+    const response = await fetch(`${USERS_ENDPOINT}/${data.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
