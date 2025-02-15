@@ -12,14 +12,21 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAbility } from "@/contexts/ability.context";
 import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
 import { useSession } from "@/hooks/use-sessions";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +36,7 @@ import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { debounce } from "lodash";
 import { ChevronLeft, ChevronRight, Eye, Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -36,18 +44,45 @@ import { useState } from "react";
 export default function UsersPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [search, setSearch] = useState<string | null>(null);
+
+  const handleChangeSearchDebounced = debounce((text: string) => {
+    setSearch(text);
+  }, 500);
+
+  const [role, setRole] = useState<"ADMIN" | "MANAGER" | "STANDARD" | null>(
+    null
+  );
+
   const { toast } = useToast();
   const router = useRouter();
   const { accessToken } = useSession();
   const queryClient = new QueryClient();
 
-  const ability = useAbility();
-  const isUserAllowed = ability.can(Permission.READ_ANY, "User");
+  const hasPermission = usePermissionRedirect(Permission.READ_ANY);
 
   const { data: users, refetch: reloadUsers } = useQuery({
-    queryKey: ["list-users"],
-    queryFn: () => userService.list({ accessToken: accessToken as string }),
-    enabled: isUserAllowed,
+    queryKey: [
+      "list-users",
+      {
+        page,
+        limit,
+        search,
+        role,
+      },
+    ],
+    queryFn: () =>
+      userService.list({
+        accessToken: accessToken as string,
+        page,
+        limit,
+        ...(search && { search }),
+        ...(role && { role }),
+      }),
+    enabled: hasPermission,
   });
 
   const { mutate: deleteUser } = useMutation({
@@ -86,7 +121,22 @@ export default function UsersPage() {
     setSelectedUserId(null);
   };
 
-  const hasPermission = usePermissionRedirect(Permission.READ_ANY);
+  function handleIncrementPage() {
+    if (
+      (users?.[1] &&
+        Number(page) >= Math.ceil(users[1] / (Number(limit) || 10))) ||
+      users?.[0]?.length === users?.[1]
+    )
+      return;
+
+    setPage((prev) => prev + 1);
+  }
+
+  function handleDecrementPage() {
+    if (page === 1) return;
+    setPage((prev) => prev - 1);
+  }
+
   if (!hasPermission) return null;
 
   return (
@@ -98,10 +148,30 @@ export default function UsersPage() {
       <div className="h-[calc(100vh-4rem)] overflow-auto p-8">
         <div className="flex items-center justify-between mb-4">
           <Input
-            id="searchProduct"
             placeholder="Filtrar buscas"
             className="w-1/3 mb-4 m-1"
+            onChange={(e) => handleChangeSearchDebounced(e.target.value)}
           />
+          <Select
+            onValueChange={(value) =>
+              setRole(value as "ADMIN" | "MANAGER" | "STANDARD" | null)
+            }
+          >
+            <SelectTrigger id="role" defaultValue={"10"} className="w-1/3">
+              <SelectValue placeholder="Função" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem className="cursor-pointer" value="ADMIN">
+                Administrador
+              </SelectItem>
+              <SelectItem className="cursor-pointer" value="MANAGER">
+                Gerente
+              </SelectItem>
+              <SelectItem className="cursor-pointer" value="STANDARD">
+                Padrão
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <Card>
           <Table>
@@ -113,8 +183,13 @@ export default function UsersPage() {
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
+            {users?.[0]?.length === 0 && (
+              <TableCaption className="pb-4">
+                Nenhum usuário encontrado
+              </TableCaption>
+            )}
             <TableBody>
-              {users?.map((user) => (
+              {users?.[0]?.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="p-6">
                     <span className="mr-2">{user.name}</span>
@@ -154,13 +229,40 @@ export default function UsersPage() {
             </TableBody>
           </Table>
         </Card>
-        <div className="mt-4 flex justify-end">
-          <Button className="mr-2" variant="secondary" onClick={() => {}}>
-            <ChevronLeft />
-          </Button>
-          <Button variant="secondary" onClick={() => {}}>
-            <ChevronRight />
-          </Button>
+        <div className="mt-4 flex justify-between items-center">
+          <span className="text-sm text-muted-foreground">
+            Mostrando {users?.[0]?.length || 0} de {users?.[1] || 0} usuários
+          </span>
+          <div className="flex items-center gap-2">
+            <div>
+              <Select onValueChange={(value) => setLimit(Number(value))}>
+                <SelectTrigger defaultValue={"10"}>
+                  <SelectValue placeholder="Itens por página" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem className="cursor-pointer" value="10">
+                    10
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="20">
+                    20
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="30">
+                    30
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              className="mr-2"
+              variant="secondary"
+              onClick={handleDecrementPage}
+            >
+              <ChevronLeft />
+            </Button>
+            <Button variant="secondary" onClick={handleIncrementPage}>
+              <ChevronRight />
+            </Button>
+          </div>
         </div>
       </div>
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

@@ -16,7 +16,14 @@ export const userService: TUserService = {
     if (!response.ok) throw await response.json();
   },
   list: async (data) => {
-    const response = await fetch(`${AUTH_ENDPOINT}`, {
+    const params = new URLSearchParams({
+      page: data.page.toString(),
+      limit: data.limit.toString(),
+      ...(data.search && { name: data.search }),
+      ...(data.role && { role: data.role }),
+    });
+
+    const response = await fetch(`${AUTH_ENDPOINT}?${params}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

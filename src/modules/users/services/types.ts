@@ -27,7 +27,12 @@ interface TProfileUserRequest extends TAuthRequest {
   id: string;
 }
 
-type TListUserRequest = TAuthRequest;
+interface TListUserRequest extends TAuthRequest {
+  page: number;
+  limit: number;
+  search?: string;
+  role?: "ADMIN" | "MANAGER" | "STANDARD";
+}
 
 interface TCreateUserRequest extends TAuthRequest {
   name: string;
@@ -38,7 +43,7 @@ interface TCreateUserRequest extends TAuthRequest {
 
 export type TUserService = {
   create(data: TCreateUserRequest): Promise<void>;
-  list(data: TListUserRequest): Promise<TListResponse[]>;
+  list(data: TListUserRequest): Promise<[TListResponse[], number]>;
   delete(data: TDeleteUserRequest): Promise<void>;
   profile(data: TProfileUserRequest): Promise<TListResponse>;
   update(data: TUpdateUserRequest): Promise<void>;
