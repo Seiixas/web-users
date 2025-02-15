@@ -52,6 +52,8 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <title>LogoIpsum</title>
+      <meta charSet="utf-8" />
       <body className={`antialiased`}>
         <main className="flex flex-col h-screen w-screen">
           <section className="h-full overflow-y-auto">
