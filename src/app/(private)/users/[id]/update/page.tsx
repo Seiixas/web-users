@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { userService } from "@/modules/users/services";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -27,6 +27,7 @@ import { useSession } from "@/hooks/use-sessions";
 import { Header } from "@/modules/shared/components/header";
 import { Can } from "@/modules/shared/components/can";
 import { Permission } from "@/lib/casl/ability";
+import { MediaPicker } from "@/modules/shared/components/media-picker";
 
 const updateUserSchema = z.object({
   name: z.string().optional(),
@@ -42,6 +43,7 @@ export default function UserSettingsPage() {
   const { id } = useParams();
   const { accessToken } = useSession();
   const { toast } = useToast();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { data: user, refetch: reloadUser } = useQuery({
     queryKey: ["user", id],
@@ -94,6 +96,7 @@ export default function UserSettingsPage() {
       email: !!data.email ? data.email : undefined,
       role: user?.role === data.role ? undefined : data.role,
       accessToken: accessToken as string,
+      ...(selectedFile && { avatar: selectedFile }),
     });
   });
 
@@ -198,17 +201,20 @@ export default function UserSettingsPage() {
             </Button>
           </div>
           <div className="p-4 w-1/2 flex flex-col items-center justify-center">
-            <Avatar className="w-52 h-52">
-              <AvatarImage
-                src={"https://github.com/Seiixas.png"}
-                alt="Avatar"
-              />
-              <AvatarFallback>MS</AvatarFallback>
-            </Avatar>
-            <Button variant="ghost" className="mt-4 w-32" type="button">
+            {!selectedFile && user && user.avatar && (
+              <Avatar className="w-52 h-52">
+                <AvatarImage src={user.avatar} alt="Avatar" />
+                <AvatarFallback>MS</AvatarFallback>
+              </Avatar>
+            )}
+            <MediaPicker setSelectedFile={setSelectedFile} />
+            <label
+              htmlFor="media"
+              className="flex items-center gap-1.5 text-sm cursor-pointer mt-4"
+            >
               <ImageIcon />
-              Alterar avatar
-            </Button>
+              {user?.avatar ? "Alterar avatar" : "Adicionar avatar"}
+            </label>
           </div>
         </form>
       </div>

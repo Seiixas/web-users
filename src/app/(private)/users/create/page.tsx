@@ -1,11 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AvatarFallback } from "@radix-ui/react-avatar";
 import { Image as ImageIcon, Save } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +23,8 @@ import { useSession } from "@/hooks/use-sessions";
 import { Header } from "@/modules/shared/components/header";
 import { Permission } from "@/lib/casl/ability";
 import { usePermissionRedirect } from "@/hooks/use-permission-redirect";
+import { MediaPicker } from "@/modules/shared/components/media-picker";
+import { useState } from "react";
 
 const createUserSchema = z.object({
   name: z.string({ required_error: "Nome é obrigatório" }).min(1, {
@@ -46,6 +46,7 @@ export default function UserCreationPage() {
   const isMobile = useIsMobile();
   const { accessToken } = useSession();
   const { toast } = useToast();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const hasPermission = usePermissionRedirect(Permission.CREATE);
 
   const { mutate: createUser, isPending: isUpdating } = useMutation({
@@ -70,7 +71,11 @@ export default function UserCreationPage() {
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    createUser({ ...data, accessToken: accessToken as string });
+    createUser({
+      accessToken: accessToken as string,
+      ...data,
+      ...(selectedFile && { avatar: selectedFile }),
+    });
   });
 
   if (!hasPermission) return null;
@@ -173,17 +178,14 @@ export default function UserCreationPage() {
             </Button>
           </div>
           <div className="p-4 w-1/2 flex flex-col items-center justify-center">
-            <Avatar className="w-52 h-52">
-              <AvatarImage
-                src={"https://github.com/Seiixas.png"}
-                alt="Avatar"
-              />
-              <AvatarFallback>MS</AvatarFallback>
-            </Avatar>
-            <Button variant="ghost" className="mt-4 w-32" type="button">
+            <label
+              htmlFor="media"
+              className="flex items-center gap-1.5 text-sm cursor-pointer"
+            >
               <ImageIcon />
-              Alterar avatar
-            </Button>
+              Adicionar avatar
+            </label>
+            <MediaPicker setSelectedFile={setSelectedFile} />
           </div>
         </form>
       </div>

@@ -52,10 +52,9 @@ export default function ProfilePage() {
       <Card className="max-w-3xl mx-auto">
         <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
           <Avatar className="w-24 h-24">
-            <AvatarImage
-              src={"https://github.com/Seiixas.png"}
-              alt="User avatar"
-            />
+            {user?.avatar && (
+              <AvatarImage src={user.avatar} alt="User avatar" />
+            )}
             <AvatarFallback>{user?.name.toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="text-center sm:text-left">

@@ -1,11 +1,11 @@
-type TListResponse = {
+interface TListResponse {
   id: string;
   name: string;
   email: string;
   role: "ADMIN" | "MANAGER" | "STANDARD";
   created_at: string;
   updated_at: string;
-};
+}
 
 interface TAuthRequest {
   accessToken: string;
@@ -16,6 +16,7 @@ interface TUpdateUserRequest extends TAuthRequest {
   name?: string;
   email?: string;
   password?: string;
+  avatar?: File;
   role?: "ADMIN" | "MANAGER" | "STANDARD";
 }
 
@@ -38,13 +39,18 @@ interface TCreateUserRequest extends TAuthRequest {
   name: string;
   email: string;
   password: string;
+  avatar?: File;
   role: "ADMIN" | "MANAGER" | "STANDARD";
+}
+
+interface TProfileResponse extends TListResponse {
+  avatar?: string;
 }
 
 export type TUserService = {
   create(data: TCreateUserRequest): Promise<void>;
   list(data: TListUserRequest): Promise<[TListResponse[], number]>;
   delete(data: TDeleteUserRequest): Promise<void>;
-  profile(data: TProfileUserRequest): Promise<TListResponse>;
+  profile(data: TProfileUserRequest): Promise<TProfileResponse>;
   update(data: TUpdateUserRequest): Promise<void>;
 };

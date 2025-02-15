@@ -5,13 +5,25 @@ const USERS_ENDPOINT = `${Env.NEXT_PUBLIC_API_URL}/users`;
 
 export const userService: TUserService = {
   create: async (data) => {
+    const formData = new FormData();
+
+    if (data.avatar) {
+      formData.append("avatar", data.avatar);
+    }
+    if (data.role) {
+      formData.append("role", data.role);
+    }
+
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+
     const response = await fetch(`${USERS_ENDPOINT}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${data.accessToken}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) throw await response.json();
@@ -61,13 +73,30 @@ export const userService: TUserService = {
     return await response.json();
   },
   update: async (data) => {
+    const formData = new FormData();
+
+    if (data.avatar) {
+      formData.append("avatar", data.avatar);
+    }
+    if (data.role) {
+      formData.append("role", data.role);
+    }
+    if (data.name) {
+      formData.append("name", data.name);
+    }
+    if (data.email) {
+      formData.append("email", data.email);
+    }
+    if (data.password) {
+      formData.append("password", data.password);
+    }
+
     const response = await fetch(`${USERS_ENDPOINT}/${data.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${data.accessToken}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) throw await response.json();

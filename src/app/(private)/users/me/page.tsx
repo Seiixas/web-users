@@ -42,13 +42,11 @@ export default function ProfilePage() {
         <Card className="max-w-3xl mx-auto">
           <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage
-                src="https://github.com/Seiixas.png"
-                alt="User avatar"
-              />
-              <AvatarFallback>
-                {fetchUser?.name?.toUpperCase() ||
-                  fetchUser?.email?.charAt(0).toUpperCase()}
+              {fetchUser?.avatar && (
+                <AvatarImage src={fetchUser.avatar} alt="User avatar" />
+              )}
+              <AvatarFallback className="text-2xl font-bold bg-purple-300">
+                {fetchUser?.name[0] || fetchUser?.email[0]}
               </AvatarFallback>
             </Avatar>
             <div className="text-center sm:text-left">
