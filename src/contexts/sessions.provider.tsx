@@ -3,8 +3,12 @@ import { SessionContext } from "./sessions.context";
 
 const SESSION_STORAGE_KEY = "userSession";
 
-export default function SessionProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+export function SessionProvider({ children }: PropsWithChildren) {
+  const [user, setUser] = useState<{
+    id: string;
+    email: string;
+    name: string;
+  } | null>(null);
   const [role, setRole] = useState<"ADMIN" | "MANAGER" | "STANDARD" | null>(
     null
   );
@@ -22,7 +26,7 @@ export default function SessionProvider({ children }: PropsWithChildren) {
   }, []);
 
   const setSession = (session: {
-    user: { id: string; email: string };
+    user: { id: string; email: string; name: string };
     role: "ADMIN" | "MANAGER" | "STANDARD";
     accessToken: string;
   }) => {

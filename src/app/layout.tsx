@@ -1,12 +1,11 @@
 "use client";
 
-import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SessionProvider from "@/contexts/sessions.provider";
+import { SessionProvider } from "@/contexts/sessions.provider";
 
 const queryClient = new QueryClient();
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -15,8 +14,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <main className="flex flex-col h-screen w-screen bg-background text-foreground">
-          <section className="h-full overflow-y-auto bg-background">
+        <main className="flex flex-col h-screen w-screen">
+          <section className="h-full overflow-y-auto">
             <QueryClientProvider client={queryClient}>
               <SessionProvider>{children}</SessionProvider>
               <Toaster />

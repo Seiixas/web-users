@@ -1,7 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "@/hooks/use-sessions";
+import { Badge } from "@/modules/shared/components/badge";
+import { Badge as BadgeCN } from "@/components/ui/badge";
 import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { useQuery } from "@tanstack/react-query";

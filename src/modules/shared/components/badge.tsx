@@ -19,12 +19,13 @@ export function Badge({ role }: TBadgeProps) {
   return (
     <CNBadge
       className={cn(
-        role === "MANAGER" && "!bg-green-600",
-        role === "ADMIN" && "!bg-black",
-        role === "STANDARD" && "!bg-blue-600"
+        role === "MANAGER" && "bg-green-600",
+        role === "ADMIN" && "bg-black",
+        role === "STANDARD" && "bg-blue-600"
       )}
+      variant={"outline"}
     >
-      {UserRole[role]}
+      <span>{UserRole[role]}</span>
     </CNBadge>
   );
 }
