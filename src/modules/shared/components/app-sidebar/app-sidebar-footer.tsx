@@ -16,7 +16,7 @@ export function AppSidebarFooter() {
     <SidebarFooter className="p-4 border-t flex flex-row items-center justify-between">
       <div>
         <Avatar>
-          <AvatarImage src="https://github.com/Seiixas.png" />
+          <AvatarImage src={user?.avatar} />
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
       </div>

@@ -5,6 +5,7 @@ type TSessionContext = {
     id: string;
     email: string;
     name: string;
+    avatar?: string;
   } | null;
   role: "ADMIN" | "MANAGER" | "STANDARD" | null;
   accessToken: string | null;
@@ -14,6 +15,7 @@ type TSessionContext = {
       id: string;
       email: string;
       name: string;
+      avatar?: string;
     };
     role: "ADMIN" | "MANAGER" | "STANDARD";
     accessToken: string;

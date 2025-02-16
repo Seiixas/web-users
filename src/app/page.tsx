@@ -59,6 +59,7 @@ export default function Home() {
           id: data.user.id,
           name: data.user.name,
           email: data.user.email,
+          avatar: data.user.avatar,
         },
         role: data.user.role,
         accessToken: data.accessToken,
