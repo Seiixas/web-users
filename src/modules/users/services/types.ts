@@ -2,6 +2,7 @@ interface TListResponse {
   id: string;
   name: string;
   email: string;
+  is_activated: boolean;
   role: "ADMIN" | "MANAGER" | "STANDARD";
   created_at: string;
   updated_at: string;

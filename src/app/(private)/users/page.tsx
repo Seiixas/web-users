@@ -47,6 +47,8 @@ import { debounce } from "lodash";
 import {
   ChevronLeft,
   ChevronRight,
+  CircleCheckBig,
+  CircleOff,
   EllipsisVertical,
   Eye,
   Pencil,
@@ -193,6 +195,7 @@ export default function UsersPage() {
                 <TableHead className="p-4">Nome</TableHead>
                 <TableHead>E-mail</TableHead>
                 <TableHead>Registrado em</TableHead>
+                <TableHead>Ativo</TableHead>
                 <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
@@ -212,6 +215,13 @@ export default function UsersPage() {
                   <TableCell>
                     {format(new Date(user.created_at), "dd/MM/yyyy 'às' HH:mm")}
                   </TableCell>
+                  <TableHead>
+                    {user.is_activated ? (
+                      <CircleCheckBig className="text-green-500" />
+                    ) : (
+                      <CircleOff className="text-red-500" />
+                    )}
+                  </TableHead>
                   <TableCell className="text-right">
                     {isMobile ? (
                       <DropdownMenu>
