@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "install-n-run": "npm install && npm run dev",
+    "docker:build": "docker compose -f ./docker/dev/docker-compose.yml up -d --build",
+    "docker:up": "docker compose -f ./docker/dev/docker-compose.yml up -d",
+    "docker:down": "docker compose -f ./docker/dev/docker-compose.yml down",
+    "docker:start": "docker compose -f ./docker/dev/docker-compose.yml start"
   },
   "dependencies": {
     "@casl/ability": "^6.7.3",
