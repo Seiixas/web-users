@@ -43,7 +43,7 @@ import { Header } from "@/modules/shared/components/header";
 import { userService } from "@/modules/users/services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import {
   ChevronLeft,
   ChevronRight,
@@ -60,6 +60,8 @@ import { useState } from "react";
 export default function UsersPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const { user } = useSession();
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -131,6 +133,17 @@ export default function UsersPage() {
 
   const handleDeleteUser = () => {
     if (!selectedUserId) return;
+
+    if (selectedUserId === user?.id) {
+      toast({
+        title: "Você não pode deletar sua própria conta",
+        variant: "destructive",
+      });
+      setIsDeleteDialogOpen(false);
+      setSelectedUserId(null);
+      return;
+    }
+
     deleteUser({ id: selectedUserId, accessToken: accessToken as string });
     setIsDeleteDialogOpen(false);
     setSelectedUserId(null);
