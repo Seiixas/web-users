@@ -30,6 +30,7 @@ O formato das variáveis de ambiente encontra-se no arquivo `.env.copy`.
 Simples, não? Mas, de qualquer forma, deixarei aqui embaixo a env que estou utilizando onde não há dados sensíveis:
 
 ```
+# .env
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
@@ -42,5 +43,7 @@ npm run docker:build
 ```
 
 Ao executer este comando, apenas o container do front-end será inicializado.
+
+☕️ **Aguarde!**: O entrypoint do serviço de API irá instalar os pacotes depois ser inicializado. Sendo assim, pegue um cafézinho (ou chá, se for de seu gosto) e aguarde o container inicializar na porta `3001`. Caso queira ver o andamento do build, utilize o comando `docker logs going2test-web -f`.
 
 ⚠️ **Importante**: Os containers docker do projeto da API devem rodar primeiro, pois é nele onde a rede docker é criada para comunicação entre os containers, além do óbvio: O front-end depende do back-end 😁.
