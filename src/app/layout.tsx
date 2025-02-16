@@ -29,7 +29,7 @@ export default function RootLayout({
             variant: "destructive",
           });
           setTimeout(() => {
-            clearSession();
+            if (typeof clearSession === "function") clearSession();
           }, 10);
         }
       },
@@ -43,7 +43,7 @@ export default function RootLayout({
             variant: "destructive",
           });
           setTimeout(() => {
-            clearSession();
+            if (typeof clearSession === "function") clearSession();
           }, 10);
         }
       },
